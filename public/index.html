@@ -1,0 +1,1483 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FoxRove · Ethan Zhang</title>
+  <meta name="description" content="Ethan Zhang 的个人世界与长期作品集。">
+  <style>
+    :root {
+      --bg: oklch(0.145 0.018 226);
+      --surface: oklch(0.205 0.018 222);
+      --fg: oklch(0.925 0.018 86);
+      --muted: oklch(0.69 0.026 230);
+      --border: oklch(0.34 0.026 220);
+      --accent: oklch(0.72 0.075 62);
+      --ink: oklch(0.11 0.015 226);
+      --mist: oklch(0.82 0.026 216);
+      --field: oklch(0.31 0.04 132);
+      --paper: oklch(0.925 0.022 80);
+      --paper-soft: oklch(0.885 0.025 78);
+      --paper-deep: oklch(0.81 0.028 74);
+      --ink-text: oklch(0.17 0.018 64);
+      --ink-muted: oklch(0.43 0.022 72);
+      --line-warm: oklch(0.72 0.028 76);
+      --ember: oklch(0.57 0.09 48);
+      --ease-out: cubic-bezier(.2, .8, .2, 1);
+      --ease-soft: cubic-bezier(.22, 1, .36, 1);
+      --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      --font-body: "Avenir Next", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: "SFMono-Regular", "Cascadia Code", "Liberation Mono", Menlo, monospace;
+      color-scheme: light dark;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--bg); scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--paper);
+      color: var(--ink-text);
+      font-family: var(--font-body);
+      line-height: 1.55;
+      letter-spacing: 0;
+    }
+    h1, h2, h3, p, a, button, dt, dd, li, span {
+      overflow-wrap: break-word;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button {
+      font: inherit;
+      color: inherit;
+      background: none;
+      border: 0;
+    }
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+    }
+    .skip-link {
+      position: fixed;
+      top: .9rem;
+      left: .9rem;
+      z-index: 20;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 .9rem;
+      background: var(--paper);
+      color: var(--ink-text);
+      border: 1px solid var(--line-warm);
+      transform: translateY(-140%);
+      transition: transform .18s var(--ease-out);
+    }
+    .skip-link:focus-visible {
+      transform: translateY(0);
+    }
+
+    .page-shell { overflow: hidden; }
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      isolation: isolate;
+      background: var(--ink) url("/assets/foxrove-hero.jpg") center / cover no-repeat;
+    }
+    .topbar,
+    .hero-content {
+      animation: hero-rise .82s var(--ease-soft) both;
+    }
+    .hero-content {
+      animation-delay: .12s;
+    }
+
+    .hero-media,
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -3;
+    }
+    .hero-video {
+      object-fit: cover;
+      object-position: center;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(90deg, oklch(0.08 0.016 226 / 0.76), oklch(0.08 0.016 226 / 0.28) 34%, transparent 68%),
+        linear-gradient(180deg, oklch(0.08 0.016 226 / 0.42), transparent 32%, oklch(0.08 0.016 226 / 0.46));
+      pointer-events: none;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset-inline: 0;
+      bottom: -1px;
+      height: 28vh;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse 72% 42% at 22% 100%, oklch(0.32 0.035 145 / .58), transparent 70%),
+        linear-gradient(180deg, transparent 4%, oklch(0.18 0.025 215 / .18) 42%, oklch(0.25 0.028 132 / .46) 77%, oklch(0.47 0.028 105 / .72));
+      pointer-events: none;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(9rem, 1fr) auto minmax(8rem, 1fr);
+      align-items: center;
+      gap: 1.5rem;
+      width: min(100% - 3rem, 1180px);
+      margin: 0 auto;
+      padding: 1.35rem 0;
+      color: oklch(0.9 0.018 90);
+    }
+    .primary-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(1rem, 2.4vw, 2.6rem);
+    }
+    .topbar .primary-nav { grid-column: 2; }
+    .primary-nav a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0;
+      color: oklch(0.89 0.018 90);
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      transition: color .18s ease, text-underline-offset .18s ease;
+      text-decoration: underline;
+      text-decoration-color: transparent;
+      text-underline-offset: .45rem;
+    }
+    .primary-nav a:hover {
+      color: var(--fg);
+      text-decoration-color: currentColor;
+      text-underline-offset: .28rem;
+    }
+    .top-actions {
+      justify-self: end;
+      grid-column: 3;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .lang-switch {
+      min-height: 44px;
+      border: 0;
+      background: transparent;
+      color: oklch(0.9 0.018 90);
+    }
+    .lang-switch {
+      display: inline-grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .35rem;
+    }
+    .lang-switch button {
+      min-width: 48px;
+      min-height: 44px;
+      padding: 0 .65rem;
+      cursor: pointer;
+      color: oklch(0.84 0.018 90);
+      font-family: var(--font-mono);
+      font-size: .72rem;
+    }
+    .lang-switch button[aria-pressed="true"] {
+      color: var(--fg);
+      text-decoration: underline;
+      text-underline-offset: .35rem;
+    }
+
+    .hero-content {
+      align-self: end;
+      width: min(100% - 3rem, 1180px);
+      margin: 0 auto;
+      padding: 9vh 0 15vh;
+      display: grid;
+      grid-template-columns: minmax(0, 34rem) 1fr;
+      gap: 2rem;
+    }
+    .current-world {
+      display: inline-flex;
+      align-items: center;
+      gap: .65rem;
+      width: fit-content;
+      margin-bottom: 1.1rem;
+      color: oklch(0.82 0.024 86);
+      font-family: var(--font-mono);
+      font-size: .74rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .current-world::before {
+      content: "";
+      width: .5rem;
+      height: .5rem;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 24px oklch(0.72 0.075 62 / .42);
+    }
+    .hero-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(3.45rem, 6.4vw, 7.4rem);
+      line-height: .92;
+      letter-spacing: 0;
+      text-wrap: balance;
+      color: oklch(0.96 0.02 86);
+      text-shadow: 0 2px 30px oklch(0.04 0.01 230 / .74);
+    }
+    .hero-kicker {
+      margin: 1.25rem 0 0;
+      color: oklch(0.84 0.022 86);
+      font-size: clamp(1rem, 1.45vw, 1.25rem);
+      letter-spacing: .04em;
+    }
+    .hero-note {
+      align-self: end;
+      justify-self: end;
+      max-width: 19rem;
+      padding-bottom: .55rem;
+      color: oklch(0.78 0.02 90);
+      font-size: .93rem;
+    }
+    .hero-status {
+      position: absolute;
+      right: max(1.5rem, calc((100vw - 1180px) / 2));
+      bottom: 1.2rem;
+      z-index: 2;
+      margin: 0;
+      max-width: 16rem;
+      color: oklch(0.82 0.018 90);
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateY(.3rem);
+      transition: opacity .22s var(--ease-out), transform .22s var(--ease-out);
+      pointer-events: none;
+    }
+    .hero.is-video-loading .hero-status,
+    .hero.is-video-error .hero-status {
+      opacity: .82;
+      transform: translateY(0);
+    }
+    .scroll-cue {
+      position: absolute;
+      left: 50%;
+      bottom: 1.4rem;
+      transform: translateX(-50%);
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: .65rem;
+      color: oklch(0.84 0.018 90);
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .scroll-cue::before {
+      content: "";
+      width: 1px;
+      height: 34px;
+      background: linear-gradient(180deg, var(--fg), transparent);
+      animation: breathe 2.8s ease-in-out infinite;
+    }
+
+    main {
+      background: var(--paper);
+      color: var(--ink-text);
+      position: relative;
+      padding-top: clamp(8rem, 22vh, 19rem);
+    }
+    main::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: clamp(22rem, 48vh, 40rem);
+      background:
+        radial-gradient(ellipse 74% 46% at 50% -5%, oklch(0.35 0.026 210 / .9), transparent 67%),
+        radial-gradient(ellipse 48% 30% at 8% 14%, oklch(0.41 0.038 137 / .52), transparent 72%),
+        radial-gradient(ellipse 38% 26% at 94% 22%, oklch(0.62 0.042 82 / .34), transparent 70%),
+        linear-gradient(180deg, oklch(0.41 0.028 130) 0%, oklch(0.65 0.027 100 / .82) 34%, var(--paper) 84%);
+      pointer-events: none;
+    }
+    .section {
+      width: min(100% - 3rem, 1180px);
+      margin: 0 auto;
+      padding: clamp(5rem, 9vw, 9rem) 0;
+      position: relative;
+      isolation: isolate;
+    }
+    .section::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(1.4rem);
+      transition: opacity .72s var(--ease-soft), transform .72s var(--ease-soft);
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .section + .section {
+      border-top: 0;
+    }
+    .intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 34rem);
+      gap: 3rem;
+      align-items: end;
+      padding-top: clamp(7rem, 15vw, 13rem);
+      padding-bottom: clamp(8rem, 14vw, 12rem);
+    }
+    .eyebrow {
+      margin: 0 0 .9rem;
+      color: var(--ember);
+      font-family: var(--font-mono);
+      font-size: .74rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .intro h2,
+    .section-heading {
+      margin: 0;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(2.6rem, 5.6vw, 6.2rem);
+      line-height: .98;
+      text-wrap: balance;
+    }
+    .intro-copy {
+      margin: 0;
+      color: var(--ink-muted);
+      font-size: clamp(1.15rem, 2vw, 1.55rem);
+      line-height: 1.45;
+    }
+    .section-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(16rem, 28rem);
+      gap: 2rem;
+      align-items: end;
+      margin-bottom: 2.4rem;
+    }
+    .section-lede {
+      margin: 0;
+      color: var(--ink-muted);
+      font-size: 1rem;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: clamp(1.25rem, 3vw, 3rem);
+      align-items: start;
+    }
+    #projects {
+      padding-top: clamp(6rem, 10vw, 10rem);
+      padding-bottom: clamp(7rem, 12vw, 12rem);
+    }
+    #projects::before {
+      inset: 2rem calc(50% - 50vw) 0;
+      background:
+        radial-gradient(ellipse 44% 70% at 10% 22%, oklch(0.68 0.03 103 / .44), transparent 75%),
+        radial-gradient(ellipse 34% 48% at 92% 76%, oklch(0.72 0.03 80 / .46), transparent 76%),
+        oklch(0.86 0.024 86 / .62);
+    }
+    #projects .section-heading {
+      font-size: clamp(3.25rem, 6.8vw, 7.4rem);
+    }
+    .project-card {
+      min-height: 31rem;
+      display: grid;
+      grid-template-rows: minmax(15rem, 1fr) auto;
+      gap: 1.1rem;
+      padding: 0;
+      background: transparent;
+      color: var(--ink-text);
+      transition: transform .2s var(--ease-out);
+    }
+    .project-card:hover {
+      transform: translateY(-2px);
+    }
+    .project-card::before {
+      content: "";
+      min-height: 16rem;
+      background:
+        linear-gradient(135deg, oklch(0.2 0.03 218 / .2), transparent 42%),
+        linear-gradient(160deg, oklch(0.34 0.044 130), oklch(0.62 0.052 82) 50%, oklch(0.2 0.028 220));
+      box-shadow: 0 1rem 2.4rem oklch(0.2 0.025 74 / .12);
+      transform-origin: center;
+      transition: transform .32s var(--ease-out), filter .32s var(--ease-out), box-shadow .32s var(--ease-out);
+    }
+    .project-card:hover::before,
+    .project-card:focus-within::before {
+      transform: translateY(-.22rem) scale(1.01);
+      filter: saturate(1.04) contrast(1.02);
+      box-shadow: 0 1.35rem 3rem oklch(0.2 0.025 74 / .16);
+    }
+    .project-card:nth-child(1) {
+      grid-column: span 7;
+      min-height: 39rem;
+    }
+    .project-card:nth-child(1)::before {
+      min-height: 25rem;
+      background:
+        linear-gradient(120deg, oklch(0.13 0.018 226 / .22), transparent 55%),
+        radial-gradient(circle at 18% 22%, oklch(0.74 0.07 60), transparent 9rem),
+        linear-gradient(145deg, oklch(0.38 0.04 132), oklch(0.73 0.04 80) 46%, oklch(0.23 0.025 218));
+    }
+    .project-card:nth-child(2) {
+      grid-column: 9 / span 4;
+      margin-top: 7rem;
+    }
+    .project-card:nth-child(2)::before {
+      background:
+        radial-gradient(circle at 78% 18%, oklch(0.7 0.06 50), transparent 7rem),
+        linear-gradient(150deg, oklch(0.23 0.024 210), oklch(0.78 0.028 84));
+    }
+    .project-card:nth-child(3) {
+      grid-column: 2 / span 4;
+      margin-top: -1rem;
+    }
+    .project-card:nth-child(3)::before {
+      background:
+        linear-gradient(140deg, oklch(0.76 0.034 86), oklch(0.36 0.052 136) 50%, oklch(0.21 0.025 222));
+    }
+    .project-card:nth-child(4) {
+      grid-column: 7 / span 6;
+      margin-top: 4rem;
+    }
+    .project-card:nth-child(4)::before {
+      min-height: 21rem;
+      background:
+        radial-gradient(circle at 24% 20%, oklch(0.8 0.035 92), transparent 8rem),
+        linear-gradient(135deg, oklch(0.2 0.026 226), oklch(0.56 0.052 240), oklch(0.78 0.03 86));
+    }
+    .project-index {
+      color: var(--ink-muted);
+      font-family: var(--font-mono);
+      font-size: .78rem;
+    }
+    .project-card h3 {
+      margin: .7rem 0 .65rem;
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 3vw, 3.3rem);
+      font-weight: 400;
+      line-height: 1;
+    }
+    .project-card p {
+      margin: 0 0 1.1rem;
+      color: var(--ink-muted);
+      font-size: 1rem;
+    }
+    .tech-line {
+      display: block;
+      min-height: auto;
+      color: oklch(0.31 0.028 70);
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .text-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      width: fit-content;
+      color: var(--ink-text);
+      border-bottom: 1px solid var(--line-warm);
+      font-size: .94rem;
+      transition: color .18s var(--ease-out), border-color .18s var(--ease-out), transform .18s var(--ease-out);
+    }
+    .text-link:hover {
+      color: var(--ember);
+      border-bottom-color: var(--ember);
+      transform: translateX(.18rem);
+    }
+
+    .portal {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 33rem);
+      gap: 3rem;
+      align-items: center;
+      padding: clamp(3rem, 6vw, 5rem);
+      border: 0;
+      background:
+        radial-gradient(ellipse 42% 70% at 83% 18%, oklch(0.48 0.04 220 / .24), transparent 70%),
+        radial-gradient(ellipse 35% 60% at 12% 100%, oklch(0.42 0.045 140 / .3), transparent 74%),
+        linear-gradient(135deg, oklch(0.14 0.018 226), oklch(0.105 0.018 222) 58%, oklch(0.16 0.026 150));
+      position: relative;
+      overflow: hidden;
+      color: var(--fg);
+    }
+    .portal::after {
+      content: "";
+      position: absolute;
+      inset: 18% -12% auto auto;
+      width: 22rem;
+      height: 22rem;
+      border: 1px solid oklch(0.82 0.06 250 / .2);
+      border-radius: 50%;
+      transform: rotate(-18deg);
+      transition: transform .42s var(--ease-out), opacity .42s var(--ease-out);
+      pointer-events: none;
+    }
+    .portal:hover::after {
+      opacity: .72;
+      transform: rotate(-14deg) scale(1.03);
+    }
+    .portal h2 {
+      margin: 0 0 1rem;
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 5.1rem);
+      font-weight: 400;
+      line-height: .95;
+    }
+    .portal p {
+      margin: 0;
+      color: oklch(0.8 0.026 230);
+      max-width: 38rem;
+    }
+    .experiment-list {
+      display: grid;
+      gap: .7rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      position: relative;
+      z-index: 1;
+    }
+    .experiment-list li {
+      padding: .9rem 0;
+      border-top: 1px solid oklch(0.9 0.02 90 / .14);
+      color: oklch(0.88 0.018 90);
+    }
+    .portal-action {
+      margin-top: 2rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 1.1rem;
+      border: 1px solid var(--accent);
+      color: oklch(0.13 0.018 226);
+      background: var(--accent);
+      font-weight: 600;
+      transition: background-color .18s var(--ease-out), color .18s var(--ease-out), transform .18s var(--ease-out);
+    }
+    .portal-action:hover {
+      background: oklch(0.78 0.07 62);
+      color: oklch(0.11 0.014 226);
+      transform: translateY(-.12rem);
+    }
+
+    .editorial-grid,
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: clamp(1.2rem, 2.5vw, 2.2rem);
+    }
+    #notes {
+      padding-top: clamp(9rem, 16vw, 15rem);
+      padding-bottom: clamp(8rem, 13vw, 12rem);
+    }
+    #notes .section-top {
+      grid-template-columns: minmax(0, 38rem) minmax(14rem, 20rem);
+      margin-bottom: 4rem;
+    }
+    #notes .section-heading {
+      font-size: clamp(2.45rem, 4.5vw, 4.8rem);
+      line-height: 1.02;
+    }
+    .note-card {
+      grid-column: 1 / -1;
+      min-height: 8rem;
+      padding: 1.25rem 0;
+      border-top: 1px solid var(--line-warm);
+      background: transparent;
+      display: grid;
+      grid-template-columns: minmax(7rem, 10rem) minmax(0, 1fr) minmax(15rem, 24rem);
+      gap: 2rem;
+      align-items: baseline;
+    }
+    .note-card:last-child {
+      border-bottom: 1px solid var(--line-warm);
+    }
+    .video-card {
+      min-height: 24rem;
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
+    .note-card time,
+    .video-meta {
+      color: var(--ink-muted);
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .note-card h3,
+    .video-card h3 {
+      margin: 0 0 .8rem;
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 2.6vw, 2.6rem);
+      font-weight: 400;
+      line-height: 1.08;
+    }
+    .note-card p,
+    .video-card p {
+      margin: 0;
+      color: var(--ink-muted);
+      font-size: .94rem;
+    }
+    .video-card:nth-child(1) {
+      grid-column: span 6;
+    }
+    .video-card:nth-child(2),
+    .video-card:nth-child(3) {
+      grid-column: span 3;
+      margin-top: 4rem;
+    }
+    .thumb {
+      aspect-ratio: 16 / 9;
+      display: grid;
+      place-items: center;
+      margin: 0 0 1.15rem;
+      background:
+        linear-gradient(145deg, oklch(0.34 0.034 214), oklch(0.17 0.018 226));
+      border-bottom: 0;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 1rem 2.3rem oklch(0.22 0.025 80 / .11);
+      transition: transform .28s var(--ease-out), box-shadow .28s var(--ease-out), filter .28s var(--ease-out);
+    }
+    .video-card:nth-child(1) .thumb { aspect-ratio: 16 / 10; }
+    .video-card:nth-child(2) .thumb {
+      background:
+        radial-gradient(circle at 75% 22%, oklch(0.72 0.055 58), transparent 6rem),
+        linear-gradient(145deg, oklch(0.25 0.03 240), oklch(0.58 0.035 78));
+    }
+    .video-card:nth-child(3) .thumb {
+      background:
+        linear-gradient(145deg, oklch(0.62 0.032 86), oklch(0.25 0.035 142), oklch(0.18 0.02 226));
+    }
+    .thumb::before {
+      content: "";
+      width: 3rem;
+      height: 3rem;
+      border: 1px solid oklch(0.9 0.02 90 / .5);
+      border-radius: 50%;
+      background: oklch(0.08 0.014 226 / .24);
+    }
+    .thumb::after {
+      content: "";
+      position: absolute;
+      border-left: .75rem solid oklch(0.92 0.02 90);
+      border-top: .48rem solid transparent;
+      border-bottom: .48rem solid transparent;
+      transform: translateX(.1rem);
+    }
+    .video-card:hover .thumb {
+      background:
+        linear-gradient(145deg, oklch(0.38 0.038 214), oklch(0.2 0.018 226));
+      transform: translateY(-.18rem);
+      filter: saturate(1.05);
+      box-shadow: 0 1.35rem 2.9rem oklch(0.22 0.025 80 / .15);
+    }
+    #videos {
+      padding-top: clamp(7rem, 13vw, 12rem);
+      padding-bottom: clamp(8rem, 14vw, 13rem);
+    }
+    #videos::before {
+      inset: 0 calc(50% - 50vw);
+      background:
+        radial-gradient(ellipse 42% 62% at 9% 18%, oklch(0.63 0.035 200 / .24), transparent 72%),
+        radial-gradient(ellipse 45% 60% at 94% 78%, oklch(0.58 0.038 140 / .19), transparent 75%),
+        oklch(0.86 0.025 90 / .56);
+    }
+    #videos .section-top {
+      grid-template-columns: minmax(0, 31rem) minmax(16rem, 25rem);
+      align-items: start;
+    }
+    #videos .section-heading {
+      font-size: clamp(2.8rem, 5vw, 5.4rem);
+    }
+
+    .now-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem 1.4rem;
+      background: transparent;
+      border: 0;
+    }
+    [data-od-id="now-section"] {
+      padding-top: clamp(4rem, 7vw, 6rem);
+      padding-bottom: clamp(5rem, 9vw, 8rem);
+    }
+    [data-od-id="now-section"] .section-top {
+      grid-template-columns: 7rem minmax(0, 1fr);
+      gap: 1.2rem;
+      align-items: baseline;
+      margin-bottom: 1.35rem;
+    }
+    [data-od-id="now-section"] .eyebrow { margin: 0; }
+    [data-od-id="now-section"] .section-heading {
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      line-height: 1.4;
+      letter-spacing: .01em;
+    }
+    [data-od-id="now-section"] .section-lede {
+      grid-column: 2;
+      font-size: .9rem;
+    }
+    .now-item {
+      min-height: auto;
+      padding: 0;
+      background: transparent;
+      display: inline-flex;
+      gap: .45rem;
+      align-items: baseline;
+    }
+    .now-item dt {
+      margin: 0;
+      color: var(--ink-muted);
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .now-item dd {
+      margin: 0;
+      color: var(--ink-text);
+      font-size: .9rem;
+    }
+
+    .about-contact {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 29rem);
+      gap: 3rem;
+      align-items: start;
+    }
+    .about-contact {
+      padding-top: clamp(7rem, 13vw, 12rem);
+      padding-bottom: clamp(7rem, 12vw, 11rem);
+    }
+    .about-contact::before {
+      inset: 0 calc(50% - 50vw);
+      background:
+        radial-gradient(ellipse 58% 74% at 86% 62%, oklch(0.39 0.03 210 / .23), transparent 74%),
+        linear-gradient(180deg, transparent, oklch(0.73 0.025 93 / .32));
+    }
+    .about-contact .section-heading {
+      font-size: clamp(2.45rem, 4.5vw, 4.8rem);
+    }
+    .about-contact p {
+      margin: 1rem 0 0;
+      max-width: 42rem;
+      color: var(--ink-muted);
+      font-size: 1.1rem;
+    }
+    .contact-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .7rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .contact-list a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 50px;
+      padding: 0 .95rem;
+      border-bottom: 1px solid var(--line-warm);
+      background: transparent;
+      color: var(--ink-text);
+    }
+    .contact-list a:hover {
+      border-bottom-color: var(--ember);
+      color: var(--ember);
+      background: oklch(0.88 0.025 78 / .48);
+    }
+    .footer {
+      width: min(100% - 3rem, 1180px);
+      margin: 0 auto;
+      padding: 2.2rem 0 2.8rem;
+      border-top: 1px solid oklch(0.36 0.025 180 / .42);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      color: oklch(0.64 0.026 188);
+      font-size: .85rem;
+      position: relative;
+      isolation: isolate;
+    }
+    .footer::before {
+      content: "";
+      position: absolute;
+      inset: 0 calc(50% - 50vw) -2.8rem;
+      z-index: -1;
+      background: oklch(0.17 0.02 210);
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: .32; transform: scaleY(.72); }
+      50% { opacity: 1; transform: scaleY(1); }
+    }
+    @keyframes hero-rise {
+      from { opacity: 0; transform: translateY(.8rem); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+      .hero-video { display: none; }
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .topbar {
+        grid-template-columns: 1fr auto;
+        width: min(100% - 2rem, 760px);
+      }
+      .topbar .primary-nav {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        justify-content: space-between;
+        width: 100%;
+      }
+      .top-actions { grid-column: 2; }
+      .hero-content,
+      .intro,
+      .section-top,
+      .portal,
+      .about-contact {
+        grid-template-columns: 1fr;
+      }
+      .hero-content {
+        width: min(100% - 2rem, 760px);
+        padding-bottom: 13vh;
+      }
+      .hero-note {
+        justify-self: start;
+        max-width: 28rem;
+      }
+      .projects-grid,
+      .video-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .project-card:nth-child(1),
+      .project-card:nth-child(4),
+      .video-card:nth-child(1) {
+        grid-column: span 6;
+      }
+      .project-card:nth-child(2),
+      .project-card:nth-child(3),
+      .video-card:nth-child(2),
+      .video-card:nth-child(3) {
+        grid-column: span 3;
+        margin-top: 0;
+      }
+      .note-card {
+        grid-template-columns: minmax(6rem, 8rem) minmax(0, 1fr);
+      }
+      .note-card p {
+        grid-column: 2;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body { background: var(--paper); }
+      .hero {
+        min-height: 100svh;
+        background-position: 58% center;
+      }
+      .hero-video {
+        display: none;
+      }
+      .hero::before {
+        background:
+          linear-gradient(180deg, oklch(0.08 0.016 226 / .66), transparent 24%, oklch(0.08 0.016 226 / .7)),
+          linear-gradient(90deg, oklch(0.08 0.016 226 / .58), transparent 76%);
+      }
+      .topbar {
+        width: min(100% - 1.25rem, 34rem);
+        padding-top: .8rem;
+        gap: .65rem;
+      }
+      .primary-nav {
+        overflow-x: auto;
+        justify-content: flex-start;
+        scrollbar-width: none;
+      }
+      .primary-nav::-webkit-scrollbar { display: none; }
+      .primary-nav a {
+        flex: 0 0 auto;
+        padding: 0 .2rem;
+      }
+      .hero-content,
+      .section,
+      .footer {
+        width: min(100% - 1.25rem, 34rem);
+      }
+      .hero-content {
+        align-self: end;
+        padding: 9vh 0 11vh;
+      }
+      .current-world {
+        font-size: .68rem;
+        max-width: 100%;
+      }
+      .hero-title {
+        font-size: clamp(3.1rem, 16vw, 4.8rem);
+      }
+      .hero-kicker {
+        max-width: 18rem;
+      }
+      .hero-note {
+        max-width: 18rem;
+        font-size: .86rem;
+      }
+      .scroll-cue {
+        left: 1rem;
+        transform: none;
+        bottom: .75rem;
+      }
+      .section {
+        padding: 4.4rem 0;
+      }
+      #projects,
+      #notes,
+      #videos,
+      .about-contact {
+        padding-top: 5.6rem;
+        padding-bottom: 5.8rem;
+      }
+      [data-od-id="now-section"] {
+        padding-top: 3.8rem;
+        padding-bottom: 4.8rem;
+      }
+      .intro h2,
+      .section-heading,
+      .portal h2 {
+        font-size: clamp(2.35rem, 12vw, 3.55rem);
+      }
+      .projects-grid,
+      .video-grid,
+      .contact-list {
+        grid-template-columns: 1fr;
+      }
+      .project-card:nth-child(1),
+      .project-card:nth-child(2),
+      .project-card:nth-child(3),
+      .project-card:nth-child(4),
+      .video-card:nth-child(1),
+      .video-card:nth-child(2),
+      .video-card:nth-child(3) {
+        grid-column: 1;
+        margin-top: 0;
+      }
+      .project-card {
+        min-height: 18rem;
+      }
+      .project-card::before,
+      .project-card:nth-child(1)::before,
+      .project-card:nth-child(4)::before {
+        min-height: 13rem;
+      }
+      .project-card h3 {
+        margin-top: .7rem;
+      }
+      .note-card {
+        grid-template-columns: 1fr;
+        gap: .6rem;
+      }
+      [data-od-id="now-section"] .section-top {
+        grid-template-columns: 1fr;
+        gap: .3rem;
+        margin-bottom: 1rem;
+      }
+      [data-od-id="now-section"] .section-lede {
+        grid-column: auto;
+      }
+      .note-card p {
+        grid-column: auto;
+      }
+      .video-card {
+        min-height: 13rem;
+      }
+      .footer {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content" data-i18n="skipLink" data-od-id="skip-link">Skip to main content</a>
+  <div class="page-shell">
+    <header class="hero is-video-loading" data-od-id="hero-current-world">
+      <div class="hero-media" aria-hidden="true">
+        <video class="hero-video" data-od-id="hero-video" autoplay muted loop playsinline preload="metadata" poster="/assets/foxrove-hero.jpg">
+          <source src="/assets/foxrove-hero.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <div class="topbar" data-od-id="top-navigation">
+        <nav class="primary-nav" aria-label="Primary navigation" data-od-id="primary-navigation">
+          <a href="#projects" data-i18n="navProjects" data-od-id="nav-projects">Projects</a>
+          <a href="#notes" data-i18n="navNotes" data-od-id="nav-notes">Notes</a>
+          <a href="#videos" data-i18n="navVideos" data-od-id="nav-videos">Videos</a>
+          <a href="#about" data-i18n="navAbout" data-od-id="nav-about">About</a>
+        </nav>
+        <div class="top-actions">
+          <div class="lang-switch" aria-label="Language switch" data-od-id="language-switch">
+            <button type="button" data-lang="en" aria-pressed="true" data-od-id="language-en">EN</button>
+            <button type="button" data-lang="zh" aria-pressed="false" data-od-id="language-zh">中文</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="hero-content" aria-labelledby="hero-title">
+        <div>
+          <p class="current-world" data-i18n="currentWorld" data-od-id="current-world">August 2026 · Somewhere Beyond</p>
+          <h1 id="hero-title" class="hero-title" data-od-id="hero-heading">Ethan Zhang</h1>
+          <p class="hero-kicker" data-i18n="heroKicker" data-od-id="hero-identity">developer · builder · wanderer</p>
+        </div>
+          <p class="hero-note" data-i18n="heroNote" data-od-id="hero-note">A long-term personal world: the landscape can change, while the core remains the software, ideas, and records being built.</p>
+      </section>
+
+      <a class="scroll-cue" href="#intro" data-i18n="scrollCue" data-od-id="scroll-indicator">Scroll</a>
+      <p class="hero-status" aria-live="polite" data-i18n="heroVideoLoading" data-od-id="hero-video-status">Loading world</p>
+    </header>
+
+    <main id="main-content">
+      <section id="intro" class="section intro" data-od-id="short-introduction">
+        <div>
+          <p class="eyebrow" data-i18n="introEyebrow" data-od-id="intro-eyebrow">Entering Ethan's World</p>
+          <h2 data-i18n="introTitle" data-od-id="intro-heading">First the landscape, then the person.</h2>
+        </div>
+        <p class="intro-copy" data-i18n="introCopy" data-od-id="intro-copy">Hi, I'm Ethan. I build software, explore AI, and share what I learn along the way.</p>
+      </section>
+
+      <section id="projects" class="section" data-od-id="selected-projects">
+        <div class="section-top">
+          <div>
+            <p class="eyebrow" data-i18n="projectsEyebrow" data-od-id="projects-eyebrow">Selected Projects</p>
+            <h2 class="section-heading" data-i18n="projectsTitle" data-od-id="projects-heading">Things built for real.</h2>
+          </div>
+          <p class="section-lede" data-i18n="projectsLede" data-od-id="projects-lede">Projects are the professional core of FoxRove. This section makes capability, stack, and product judgment immediately legible.</p>
+        </div>
+        <div class="projects-grid">
+          <article class="project-card" data-od-id="project-card-pawcarehub">
+            <span class="project-index">01</span>
+            <div>
+              <span class="tech-line">Vue 3 · Spring Boot · MySQL</span>
+              <h3>PawCareHub</h3>
+              <p data-i18n="projectPaw">A pet-care service platform that brings appointments, profiles, and care workflows into one clear product experience.</p>
+              <a class="text-link" href="#" data-i18n="viewProject" data-od-id="project-pawcarehub-link">View project</a>
+            </div>
+          </article>
+          <article class="project-card" data-od-id="project-card-jobtrack">
+            <span class="project-index">02</span>
+            <div>
+              <span class="tech-line">React · TypeScript · Node · Prisma</span>
+              <h3>JobTrack</h3>
+              <p data-i18n="projectJob">A job-search tracker for opportunities, stages, and next actions, built to reduce scattered information and missed follow-ups.</p>
+              <a class="text-link" href="#" data-i18n="viewProject" data-od-id="project-jobtrack-link">View project</a>
+            </div>
+          </article>
+          <article class="project-card" data-od-id="project-card-focusfox">
+            <span class="project-index">03</span>
+            <div>
+              <span class="tech-line">React · TypeScript · PWA</span>
+              <h3>FocusFox</h3>
+              <p data-i18n="projectFocus">A lightweight focus tool with fewer settings and clearer rhythms for study and development sessions.</p>
+              <a class="text-link" href="#" data-i18n="viewProject" data-od-id="project-focusfox-link">View project</a>
+            </div>
+          </article>
+          <article class="project-card" data-od-id="project-card-foxwords">
+            <span class="project-index">04</span>
+            <div>
+              <span class="tech-line">React · Local AI · Language Learning</span>
+              <h3>FoxWords</h3>
+              <p data-i18n="projectWords">A local-AI language learning experiment shaped around input, memory, and daily review.</p>
+              <a class="text-link" href="#" data-i18n="viewProject" data-od-id="project-foxwords-link">View project</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" data-od-id="foxluma-ai-experiments">
+        <div class="portal">
+          <div>
+            <p class="eyebrow" data-i18n="foxlumaEyebrow" data-od-id="foxluma-eyebrow">FoxLuma / AI Experiments</p>
+            <h2 data-i18n="foxlumaTitle" data-od-id="foxluma-heading">A doorway into another layer of light.</h2>
+            <p data-i18n="foxlumaCopy" data-od-id="foxluma-copy">FoxLuma will carry the fuller AI-lab identity. Here it stays as a concise portal: clear enough to enter, quiet enough not to overtake FoxRove.</p>
+            <a class="portal-action" href="https://foxluma.com" data-i18n="foxlumaCta" data-od-id="foxluma-cta">Enter FoxLuma →</a>
+          </div>
+          <ul class="experiment-list" aria-label="AI experiment preview" data-od-id="experiment-list">
+            <li data-i18n="experimentMemory" data-od-id="experiment-memory">Local long-memory AI companion</li>
+            <li data-i18n="experimentInput" data-od-id="experiment-input">AI bilingual input system</li>
+            <li data-i18n="experimentVideo" data-od-id="experiment-video">Small-VRAM video generation</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="notes" class="section" data-od-id="latest-notes">
+        <div class="section-top">
+          <div>
+            <p class="eyebrow" data-i18n="notesEyebrow" data-od-id="notes-eyebrow">Latest Notes</p>
+            <h2 class="section-heading" data-i18n="notesTitle" data-od-id="notes-heading">Notes for a future self.</h2>
+          </div>
+          <p class="section-lede" data-i18n="notesLede" data-od-id="notes-lede">Software, AI, learning, ideas, and personal reflections that do not always look like blog headlines.</p>
+        </div>
+        <div class="editorial-grid">
+          <article class="note-card" data-od-id="note-card-local-ai">
+            <time datetime="2026-08" data-i18n="noteOneMeta">August 2026 · AI</time>
+            <h3 data-i18n="noteOneTitle">Teaching local AI to remember a long life</h3>
+            <p data-i18n="noteOneCopy">Memory, privacy, and what makes a personal assistant sustainable.</p>
+          </article>
+          <article class="note-card" data-od-id="note-card-builder-rhythm">
+            <time datetime="2026-07" data-i18n="noteTwoMeta">July 2026 · Building</time>
+            <h3 data-i18n="noteTwoTitle">The few days when an idea becomes an interface</h3>
+            <p data-i18n="noteTwoCopy">Product judgment, scope control, and why small comes first.</p>
+          </article>
+          <article class="note-card" data-od-id="note-card-language">
+            <time datetime="2026-06" data-i18n="noteThreeMeta">June 2026 · Language</time>
+            <h3 data-i18n="noteThreeTitle">Bilingual input is not just translation</h3>
+            <p data-i18n="noteThreeCopy">How tools should follow when thinking moves between Chinese and English.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="videos" class="section" data-od-id="latest-videos">
+        <div class="section-top">
+          <div>
+            <p class="eyebrow" data-i18n="videosEyebrow" data-od-id="videos-eyebrow">Latest Videos</p>
+            <h2 class="section-heading" data-i18n="videosTitle" data-od-id="videos-heading">Keeping the process visible.</h2>
+          </div>
+          <p class="section-lede" data-i18n="videosLede" data-od-id="videos-lede">The thumbnail structure leaves room for future muted hover previews on desktop, while mobile keeps clear titles and tap targets.</p>
+        </div>
+        <div class="video-grid">
+          <article class="video-card" data-od-id="video-card-build-log">
+            <div class="thumb" aria-label="Video thumbnail placeholder: build log"></div>
+            <span class="video-meta" data-i18n="videoOneMeta">Build Log · 12 min</span>
+            <h3 data-i18n="videoOneTitle">From empty file to usable prototype</h3>
+            <p data-i18n="videoOneCopy">A real product build record.</p>
+          </article>
+          <article class="video-card" data-od-id="video-card-ai-notes">
+            <div class="thumb" aria-label="Video thumbnail placeholder: AI notes"></div>
+            <span class="video-meta" data-i18n="videoTwoMeta">AI Notes · 9 min</span>
+            <h3 data-i18n="videoTwoTitle">Video experiments on small VRAM</h3>
+            <p data-i18n="videoTwoCopy">Limits, tradeoffs, and workflow.</p>
+          </article>
+          <article class="video-card" data-od-id="video-card-world-notes">
+            <div class="thumb" aria-label="Video thumbnail placeholder: world notes"></div>
+            <span class="video-meta" data-i18n="videoThreeMeta">World Notes · 6 min</span>
+            <h3 data-i18n="videoThreeTitle">This month's FoxRove world</h3>
+            <p data-i18n="videoThreeCopy">The scenery changes, the structure remains.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" data-od-id="now-section">
+        <div class="section-top">
+          <div>
+            <p class="eyebrow" data-i18n="nowEyebrow" data-od-id="now-eyebrow">Now</p>
+            <h2 class="section-heading" data-i18n="nowTitle" data-od-id="now-heading">Current coordinates.</h2>
+          </div>
+          <p class="section-lede" data-i18n="nowLede" data-od-id="now-lede">Small living status, not a dashboard.</p>
+        </div>
+        <dl class="now-panel">
+          <div class="now-item" data-od-id="now-building"><dt data-i18n="nowBuildingLabel">Building</dt><dd data-i18n="nowBuilding">FoxRove homepage system</dd></div>
+          <div class="now-item" data-od-id="now-learning"><dt data-i18n="nowLearningLabel">Learning</dt><dd data-i18n="nowLearning">Local AI workflows</dd></div>
+          <div class="now-item" data-od-id="now-thinking"><dt data-i18n="nowThinkingLabel">Thinking about</dt><dd data-i18n="nowThinking">How long-term sites stay light</dd></div>
+          <div class="now-item" data-od-id="now-reading"><dt data-i18n="nowReadingLabel">Reading</dt><dd data-i18n="nowReading">Software, language, and travel notes</dd></div>
+          <div class="now-item" data-od-id="now-somewhere"><dt data-i18n="nowSomewhereLabel">Somewhere</dt><dd data-i18n="nowSomewhere">Somewhere beyond</dd></div>
+        </dl>
+      </section>
+
+      <section id="about" class="section about-contact" data-od-id="about-contact">
+        <div>
+          <p class="eyebrow" data-i18n="aboutEyebrow" data-od-id="about-eyebrow">About / Contact</p>
+          <h2 class="section-heading" data-i18n="aboutTitle" data-od-id="about-heading">Ethan Zhang</h2>
+          <p data-i18n="aboutCopy" data-od-id="about-copy">A developer and builder who keeps collecting landscapes and questions from different places. FoxRove holds projects, notes, videos, and long-term experiments that are not fully named yet.</p>
+        </div>
+        <ul class="contact-list" data-od-id="contact-links">
+          <li><a href="#" data-od-id="contact-github">GitHub <span aria-hidden="true">↗</span></a></li>
+          <li><a href="#" data-od-id="contact-linkedin">LinkedIn <span aria-hidden="true">↗</span></a></li>
+          <li><a href="#" data-od-id="contact-youtube">YouTube <span aria-hidden="true">↗</span></a></li>
+          <li><a href="mailto:hello@foxrove.com" data-od-id="contact-email">Email <span aria-hidden="true">↗</span></a></li>
+          <li><a href="#" data-od-id="contact-resume">Resume <span aria-hidden="true">↗</span></a></li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="footer" data-od-id="footer">
+      <span data-i18n="footerLeft">FoxRove · Ethan Zhang</span>
+      <span data-i18n="footerRight">Stable structure, changing world.</span>
+    </footer>
+  </div>
+
+  <script>
+    const copy = {
+      zh: {
+        skipLink: "跳到主要内容",
+        navProjects: "项目",
+        navNotes: "札记",
+        navVideos: "视频",
+        navAbout: "关于",
+        currentWorld: "2026 年 8 月 · 远处某地",
+        heroKicker: "developer · builder · wanderer",
+        heroNote: "一个长期更新的个人世界：风景会变化，核心始终是正在构建的软件、想法与记录。",
+        heroVideoLoading: "影像加载中",
+        heroVideoFallback: "使用静态影像",
+        scrollCue: "向下",
+        introEyebrow: "进入 Ethan 的世界",
+        introTitle: "先是风景，然后是人。",
+        introCopy: "Hi，我是 Ethan。我构建软件，探索 AI，也把一路学到的东西写下来、拍下来、慢慢整理成自己的长期网站。",
+        projectsEyebrow: "Selected Projects",
+        projectsTitle: "真正构建过的东西。",
+        projectsLede: "项目是 FoxRove 的专业核心。这里优先呈现能快速说明能力、技术栈和产品判断的作品。",
+        projectPaw: "面向宠物照护场景的服务平台，把预约、资料和照护流程收束到清晰的产品体验里。",
+        projectJob: "帮助求职者记录机会、流程和下一步行动，减少信息散落造成的焦虑与遗漏。",
+        projectFocus: "轻量专注工具，用更少设置和更明确的节奏，帮助日常学习与开发进入状态。",
+        projectWords: "围绕本地 AI 与语言学习的实验，把输入、记忆和复习做成更贴近日常的工具。",
+        viewProject: "查看项目",
+        foxlumaEyebrow: "FoxLuma / AI Experiments",
+        foxlumaTitle: "通向另一层光的入口。",
+        foxlumaCopy: "FoxLuma 会承载更完整的 AI 实验身份。这里先留下一个短入口：足够明确，但不抢走 FoxRove 的主线。",
+        foxlumaCta: "进入 FoxLuma →",
+        experimentMemory: "本地长记忆 AI 伙伴",
+        experimentInput: "AI 双语输入系统",
+        experimentVideo: "小显存视频生成实验",
+        notesEyebrow: "Latest Notes",
+        notesTitle: "写给未来自己的记录。",
+        notesLede: "软件、AI、学习、想法，也包括一些不那么像博客标题的个人观察。",
+        noteOneMeta: "2026 年 8 月 · AI",
+        noteOneTitle: "让本地 AI 记住一段很长的生活",
+        noteOneCopy: "关于记忆、隐私和真正可持续的个人助手。",
+        noteTwoMeta: "2026 年 7 月 · 构建",
+        noteTwoTitle: "一个项目从想法变成界面的那几天",
+        noteTwoCopy: "记录产品判断、范围控制，以及为什么先做小。",
+        noteThreeMeta: "2026 年 6 月 · 语言",
+        noteThreeTitle: "双语输入不只是翻译",
+        noteThreeCopy: "在中文和英文之间思考时，工具应该怎样跟上。",
+        videosEyebrow: "Latest Videos",
+        videosTitle: "把过程也留下来。",
+        videosLede: "缩略图区域为未来的静音悬停预览预留结构；移动端仍以清晰标题和点击入口为主。",
+        videoOneMeta: "Build Log · 12 min",
+        videoOneTitle: "从空文件到可用原型",
+        videoOneCopy: "一次真实的产品构建记录。",
+        videoTwoMeta: "AI Notes · 9 min",
+        videoTwoTitle: "小显存也能做的视频实验",
+        videoTwoCopy: "关于限制、取舍和工作流。",
+        videoThreeMeta: "World Notes · 6 min",
+        videoThreeTitle: "这个月的 FoxRove 世界",
+        videoThreeCopy: "风景改变，但结构保持稳定。",
+        nowEyebrow: "Now",
+        nowTitle: "此刻的坐标。",
+        nowLede: "小而活的状态，不做仪表盘。",
+        nowBuildingLabel: "Building",
+        nowBuilding: "FoxRove 首页系统",
+        nowLearningLabel: "Learning",
+        nowLearning: "本地 AI 工作流",
+        nowThinkingLabel: "Thinking about",
+        nowThinking: "长期网站如何保持轻盈",
+        nowReadingLabel: "Reading",
+        nowReading: "软件、语言和旅行笔记",
+        nowSomewhereLabel: "Somewhere",
+        nowSomewhere: "远处某地",
+        aboutEyebrow: "About / Contact",
+        aboutTitle: "Ethan Zhang",
+        aboutCopy: "开发者、构建者，也是在不同地方慢慢收集风景和问题的人。FoxRove 用来放作品、笔记、视频，以及一些还没有完全命名的长期实验。",
+        footerLeft: "FoxRove · Ethan Zhang",
+        footerRight: "稳定的结构，变化的世界。"
+      },
+      en: {
+        skipLink: "Skip to main content",
+        navProjects: "Projects",
+        navNotes: "Notes",
+        navVideos: "Videos",
+        navAbout: "About",
+        currentWorld: "August 2026 · Somewhere Beyond",
+        heroKicker: "developer · builder · wanderer",
+        heroNote: "A long-term personal world: the landscape can change, while the core remains the software, ideas, and records being built.",
+        heroVideoLoading: "Loading world",
+        heroVideoFallback: "Using still world",
+        scrollCue: "Scroll",
+        introEyebrow: "Entering Ethan's World",
+        introTitle: "First the landscape, then the person.",
+        introCopy: "Hi, I'm Ethan. I build software, explore AI, and share what I learn along the way.",
+        projectsEyebrow: "Selected Projects",
+        projectsTitle: "Things built for real.",
+        projectsLede: "Projects are the professional core of FoxRove. This section makes capability, stack, and product judgment immediately legible.",
+        projectPaw: "A pet-care service platform that brings appointments, profiles, and care workflows into one clear product experience.",
+        projectJob: "A job-search tracker for opportunities, stages, and next actions, built to reduce scattered information and missed follow-ups.",
+        projectFocus: "A lightweight focus tool with fewer settings and clearer rhythms for study and development sessions.",
+        projectWords: "A local-AI language learning experiment shaped around input, memory, and daily review.",
+        viewProject: "View project",
+        foxlumaEyebrow: "FoxLuma / AI Experiments",
+        foxlumaTitle: "A doorway into another layer of light.",
+        foxlumaCopy: "FoxLuma will carry the fuller AI-lab identity. Here it stays as a concise portal: clear enough to enter, quiet enough not to overtake FoxRove.",
+        foxlumaCta: "Enter FoxLuma →",
+        experimentMemory: "Local long-memory AI companion",
+        experimentInput: "AI bilingual input system",
+        experimentVideo: "Small-VRAM video generation",
+        notesEyebrow: "Latest Notes",
+        notesTitle: "Notes for a future self.",
+        notesLede: "Software, AI, learning, ideas, and personal reflections that do not always look like blog headlines.",
+        noteOneMeta: "August 2026 · AI",
+        noteOneTitle: "Teaching local AI to remember a long life",
+        noteOneCopy: "Memory, privacy, and what makes a personal assistant sustainable.",
+        noteTwoMeta: "July 2026 · Building",
+        noteTwoTitle: "The few days when an idea becomes an interface",
+        noteTwoCopy: "Product judgment, scope control, and why small comes first.",
+        noteThreeMeta: "June 2026 · Language",
+        noteThreeTitle: "Bilingual input is not just translation",
+        noteThreeCopy: "How tools should follow when thinking moves between Chinese and English.",
+        videosEyebrow: "Latest Videos",
+        videosTitle: "Keeping the process visible.",
+        videosLede: "The thumbnail structure leaves room for future muted hover previews on desktop, while mobile keeps clear titles and tap targets.",
+        videoOneMeta: "Build Log · 12 min",
+        videoOneTitle: "From empty file to usable prototype",
+        videoOneCopy: "A real product build record.",
+        videoTwoMeta: "AI Notes · 9 min",
+        videoTwoTitle: "Video experiments on small VRAM",
+        videoTwoCopy: "Limits, tradeoffs, and workflow.",
+        videoThreeMeta: "World Notes · 6 min",
+        videoThreeTitle: "This month's FoxRove world",
+        videoThreeCopy: "The scenery changes, the structure remains.",
+        nowEyebrow: "Now",
+        nowTitle: "Current coordinates.",
+        nowLede: "Small living status, not a dashboard.",
+        nowBuildingLabel: "Building",
+        nowBuilding: "FoxRove homepage system",
+        nowLearningLabel: "Learning",
+        nowLearning: "Local AI workflows",
+        nowThinkingLabel: "Thinking about",
+        nowThinking: "How long-term sites stay light",
+        nowReadingLabel: "Reading",
+        nowReading: "Software, language, and travel notes",
+        nowSomewhereLabel: "Somewhere",
+        nowSomewhere: "Somewhere beyond",
+        aboutEyebrow: "About / Contact",
+        aboutTitle: "Ethan Zhang",
+        aboutCopy: "A developer and builder who keeps collecting landscapes and questions from different places. FoxRove holds projects, notes, videos, and long-term experiments that are not fully named yet.",
+        footerLeft: "FoxRove · Ethan Zhang",
+        footerRight: "Stable structure, changing world."
+      }
+    };
+
+    const buttons = document.querySelectorAll("[data-lang]");
+    const translatable = document.querySelectorAll("[data-i18n]");
+    const hero = document.querySelector(".hero");
+    const heroVideo = document.querySelector(".hero-video");
+    const heroStatus = document.querySelector(".hero-status");
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let activeLanguage = localStorage.getItem("foxrove-language") || "en";
+    let heroVideoState = "loading";
+    let videoFallbackTimer = 0;
+
+    const setLanguage = (lang) => {
+      activeLanguage = lang;
+      document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+      translatable.forEach((node) => {
+        const key = node.getAttribute("data-i18n");
+        if (copy[lang][key]) node.textContent = copy[lang][key];
+      });
+      buttons.forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.lang === lang));
+      });
+      if (heroStatus) {
+        if (heroVideoState === "error") heroStatus.textContent = copy[lang].heroVideoFallback;
+        if (heroVideoState === "ready") heroStatus.textContent = "";
+      }
+      localStorage.setItem("foxrove-language", lang);
+    };
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => setLanguage(button.dataset.lang));
+    });
+
+    const setHeroVideoState = (state) => {
+      if (!hero || !heroStatus) return;
+      heroVideoState = state;
+      if (state !== "loading" && videoFallbackTimer) {
+        window.clearTimeout(videoFallbackTimer);
+        videoFallbackTimer = 0;
+      }
+      hero.classList.toggle("is-video-loading", state === "loading");
+      hero.classList.toggle("is-video-error", state === "error");
+      if (state === "error") {
+        heroStatus.textContent = copy[activeLanguage].heroVideoFallback;
+      }
+      if (state === "ready") {
+        heroStatus.textContent = "";
+      }
+    };
+
+    if (heroVideo) {
+      if (prefersReducedMotion.matches) {
+        setHeroVideoState("error");
+      } else if (heroVideo.readyState >= 2) {
+        setHeroVideoState("ready");
+      } else {
+        heroVideo.addEventListener("loadeddata", () => setHeroVideoState("ready"), { once: true });
+        heroVideo.addEventListener("error", () => setHeroVideoState("error"), { once: true });
+        videoFallbackTimer = window.setTimeout(() => {
+          if (heroVideo.readyState < 2) setHeroVideoState("error");
+        }, 5000);
+      }
+    }
+
+    const revealTargets = document.querySelectorAll(".section, .project-card, .note-card, .video-card, .portal");
+    revealTargets.forEach((node) => node.classList.add("reveal"));
+    if (prefersReducedMotion.matches || !("IntersectionObserver" in window)) {
+      revealTargets.forEach((node) => node.classList.add("is-visible"));
+    } else {
+      const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+      revealTargets.forEach((node) => revealObserver.observe(node));
+    }
+
+    setLanguage(activeLanguage);
+  </script>
+</body>
+</html>
