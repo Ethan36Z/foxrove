@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Corvus — a persistent personal AI designed to run locally on consumer hardware." />
+  <link rel="icon" type="image/png" href="/foxrove-favicon.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <title>Corvus · FoxRove</title>
+  <script>document.documentElement.classList.add('js');</script>
+  <style>
+    :root {
+      --bg: oklch(0.12 0.026 258);
+      --surface: oklch(0.17 0.025 258);
+      --surface-2: oklch(0.145 0.024 258);
+      --fg: oklch(0.95 0.017 80);
+      --muted: oklch(0.72 0.028 240);
+      --border: oklch(0.29 0.034 252);
+      --accent: oklch(0.69 0.18 38);
+      --cool: oklch(0.72 0.13 225);
+      --accent-soft: color-mix(in oklch, var(--accent) 14%, transparent);
+      --cool-soft: color-mix(in oklch, var(--cool) 13%, transparent);
+      --fg-soft: color-mix(in oklch, var(--fg) 6%, transparent);
+      --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      --font-body: "Avenir Next", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: "SFMono-Regular", "Cascadia Code", "Liberation Mono", Menlo, monospace;
+      --container: 1220px;
+      --gutter: clamp(20px, 4vw, 46px);
+      --radius: 12px;
+      --radius-lg: 20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+    img, svg { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { color: inherit; font: inherit; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+    .container { width: min(100%, var(--container)); margin-inline: auto; padding-inline: var(--gutter); }
+    .mono { font-family: var(--font-mono); }
+    .muted { color: var(--muted); }
+
+    .topbar {
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+      padding-top: 12px;
+      pointer-events: none;
+    }
+    .topbar-inner {
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 7px 10px 7px 18px;
+      border: 1px solid color-mix(in oklch, var(--fg) 8%, transparent);
+      border-radius: 16px;
+      background: color-mix(in oklch, var(--surface) 40%, transparent);
+      box-shadow: inset 0 1px 0 color-mix(in oklch, var(--fg) 10%, transparent), 0 12px 30px color-mix(in oklch, var(--bg) 36%, transparent);
+      backdrop-filter: blur(18px) saturate(1.08);
+      pointer-events: auto;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 40px;
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 650;
+      letter-spacing: -.025em;
+    }
+    .brand-arrow { color: var(--accent); font-family: var(--font-mono); font-size: 15px; }
+    .nav-actions { display: flex; align-items: center; gap: 8px; }
+    .lang-switcher {
+      min-height: 40px;
+      border: 1px solid color-mix(in oklch, var(--border) 58%, transparent);
+      border-radius: 10px;
+      background: color-mix(in oklch, var(--bg) 16%, transparent);
+      padding: 7px 11px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: .045em;
+    }
+    .nav-link {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 13px;
+      border-radius: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      transition: color .2s ease, background .2s ease;
+    }
+    .nav-link:hover { color: var(--fg); background: var(--fg-soft); }
+
+    .hero {
+      position: relative;
+      isolation: isolate;
+      padding: clamp(92px, 12vw, 170px) 0 clamp(72px, 9vw, 130px);
+      overflow: clip;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: min(900px, 82vw);
+      aspect-ratio: 1;
+      left: 50%;
+      top: -28%;
+      transform: translateX(-50%);
+      z-index: -2;
+      border-radius: 50%;
+      background: radial-gradient(circle, color-mix(in oklch, var(--cool) 13%, transparent), transparent 68%);
+      filter: blur(6px);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -3;
+      background:
+        linear-gradient(115deg, transparent 0 38%, color-mix(in oklch, var(--accent) 4%, transparent) 48%, transparent 59%),
+        var(--bg);
+    }
+    .hero-copy { max-width: 900px; margin-inline: auto; text-align: center; }
+    .eyebrow {
+      margin: 0 0 22px;
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3 { margin: 0; text-wrap: balance; }
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(62px, 10vw, 132px);
+      font-weight: 500;
+      line-height: .88;
+      letter-spacing: -.06em;
+    }
+    .hero-title { margin-top: 20px; font-size: clamp(26px, 3.7vw, 46px); line-height: 1.08; letter-spacing: -.035em; }
+    .hero-lead {
+      max-width: 720px;
+      margin: 24px auto 0;
+      color: var(--muted);
+      font-size: clamp(17px, 1.8vw, 21px);
+      line-height: 1.6;
+      text-wrap: pretty;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px; }
+    .btn {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 18px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      font-size: 14px;
+      font-weight: 650;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { border-color: var(--accent); background: var(--accent); color: var(--bg); }
+    .btn-primary:hover { background: color-mix(in oklch, var(--accent) 88%, white); }
+    .btn-secondary { background: color-mix(in oklch, var(--surface) 64%, transparent); }
+    .btn-secondary:hover { background: var(--fg-soft); border-color: color-mix(in oklch, var(--border) 48%, var(--fg)); }
+    .hero-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 30px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 29px;
+      padding: 5px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: .03em;
+      background: color-mix(in oklch, var(--surface) 45%, transparent);
+    }
+
+    .product-shot-wrap { margin-top: clamp(54px, 7vw, 94px); }
+    .product-shot {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid color-mix(in oklch, var(--border) 78%, var(--fg));
+      border-radius: clamp(14px, 2vw, 24px);
+      background: var(--surface-2);
+      box-shadow: 0 32px 90px color-mix(in oklch, black 42%, transparent);
+    }
+    .product-shot::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      box-shadow: inset 0 1px 0 color-mix(in oklch, white 9%, transparent);
+    }
+    .product-shot img { width: 100%; height: auto; }
+    .shot-caption { margin: 14px 4px 0; color: var(--muted); font-family: var(--font-mono); font-size: 11px; letter-spacing: .03em; }
+
+    .section { position: relative; padding: clamp(80px, 10vw, 144px) 0; border-top: 1px solid var(--border); }
+    .section-head { display: grid; grid-template-columns: minmax(0, .78fr) minmax(0, 1.22fr); gap: clamp(34px, 7vw, 100px); align-items: start; }
+    .section-number { margin-bottom: 18px; color: var(--accent); font-family: var(--font-mono); font-size: 12px; letter-spacing: .09em; }
+    h2 { font-family: var(--font-display); font-size: clamp(38px, 5vw, 68px); line-height: 1.02; letter-spacing: -.04em; font-weight: 500; }
+    .section-copy { margin: 2px 0 0; color: var(--muted); font-size: clamp(17px, 1.7vw, 20px); line-height: 1.72; text-wrap: pretty; }
+    .section-copy + .section-copy { margin-top: 16px; }
+
+    .principle {
+      margin-top: clamp(44px, 6vw, 76px);
+      padding: clamp(26px, 4vw, 44px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, color-mix(in oklch, var(--cool) 7%, var(--surface)), var(--surface));
+    }
+    .principle-label { color: var(--cool); font-family: var(--font-mono); font-size: 11px; letter-spacing: .09em; text-transform: uppercase; }
+    .principle-text { margin: 13px 0 0; font-family: var(--font-display); font-size: clamp(28px, 4vw, 48px); line-height: 1.12; letter-spacing: -.03em; }
+
+    .memory-flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: clamp(48px, 7vw, 82px); }
+    .memory-node {
+      position: relative;
+      min-height: 180px;
+      padding: 25px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+    }
+    .memory-node:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -20px;
+      top: 50%;
+      z-index: 2;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 19px;
+    }
+    .node-kicker { color: var(--muted); font-family: var(--font-mono); font-size: 11px; letter-spacing: .05em; }
+    .memory-node h3 { margin-top: 16px; font-size: 22px; letter-spacing: -.025em; }
+    .memory-node p { margin: 10px 0 0; color: var(--muted); font-size: 14px; }
+
+    .recall-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 18px; }
+    .recall-card { padding: 24px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-2); }
+    .recall-card h3 { font-size: 18px; }
+    .recall-card p { margin: 9px 0 0; color: var(--muted); }
+
+    .runtime-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: clamp(46px, 6vw, 76px); }
+    .runtime-card { min-height: 150px; padding: 22px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .runtime-value { font-family: var(--font-display); font-size: clamp(28px, 3vw, 42px); line-height: 1; letter-spacing: -.035em; }
+    .runtime-label { margin-top: 12px; color: var(--muted); font-family: var(--font-mono); font-size: 11px; line-height: 1.5; letter-spacing: .04em; }
+
+    .deployment-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: stretch; margin-top: clamp(48px, 6vw, 76px); }
+    .deploy-card { padding: clamp(24px, 4vw, 38px); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); }
+    .deploy-card h3 { font-size: 24px; letter-spacing: -.025em; }
+    .deploy-card p { margin: 10px 0 0; color: var(--muted); }
+    .deploy-list { display: grid; gap: 9px; margin-top: 22px; padding: 0; list-style: none; color: var(--muted); font-family: var(--font-mono); font-size: 12px; }
+    .deploy-list li::before { content: '— '; color: var(--accent); }
+    .shared-model {
+      align-self: center;
+      padding: 10px 13px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--cool);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: .05em;
+      text-align: center;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+    }
+    .deploy-note { margin-top: 18px; color: var(--muted); font-size: 14px; text-align: center; }
+
+    .validation-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 13px 28px; margin-top: clamp(44px, 6vw, 70px); }
+    .validation-item {
+      display: flex;
+      gap: 13px;
+      align-items: flex-start;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .check { color: var(--accent); font-family: var(--font-mono); }
+    .validation-item span:last-child { color: color-mix(in oklch, var(--fg) 88%, var(--muted)); }
+
+    .final-cta { text-align: center; }
+    .final-cta h2 { max-width: 850px; margin-inline: auto; }
+    .final-cta p { max-width: 650px; margin: 20px auto 0; color: var(--muted); font-size: 18px; }
+    .final-cta .hero-actions { margin-top: 30px; }
+
+    footer { padding: 30px 0 40px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+    .footer-row { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+
+    .reveal { opacity: 1; transform: none; }
+    .js .reveal { opacity: 0; transform: translate3d(0, 18px, 0); transition: opacity .85s cubic-bezier(.16,1,.3,1), transform .85s cubic-bezier(.16,1,.3,1); }
+    .js .reveal.is-visible { opacity: 1; transform: translate3d(0, 0, 0); }
+    .js .hero-entry { opacity: 0; transform: translate3d(0, 10px, 0); animation: hero-in .9s cubic-bezier(.16,1,.3,1) forwards; animation-delay: var(--delay, 0s); }
+    @keyframes hero-in { to { opacity: 1; transform: translate3d(0, 0, 0); } }
+
+    @media (max-width: 860px) {
+      .section-head { grid-template-columns: 1fr; gap: 26px; }
+      .memory-flow { grid-template-columns: 1fr; }
+      .memory-node:not(:last-child)::after { content: '↓'; right: auto; left: 50%; top: auto; bottom: -24px; transform: translateX(-50%); }
+      .runtime-grid { grid-template-columns: repeat(2, 1fr); }
+      .deployment-grid { grid-template-columns: 1fr; }
+      .shared-model { writing-mode: horizontal-tb; transform: none; justify-self: center; }
+      .validation-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .topbar { top: 8px; padding-top: 8px; }
+      .topbar-inner { padding-left: 12px; }
+      .brand { font-size: 18px; }
+      .nav-link { display: none; }
+      .hero { padding-top: 84px; }
+      .hero-actions { flex-direction: column; align-items: stretch; }
+      .btn { width: 100%; }
+      .recall-grid, .runtime-grid { grid-template-columns: 1fr; }
+      .product-shot-wrap { margin-inline: calc(var(--gutter) * -.45); }
+      .shot-caption { margin-inline: calc(var(--gutter) * .45); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+      .js .reveal, .js .hero-entry { opacity: 1 !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="topbar-inner">
+        <a class="brand" href="/#projects" aria-label="Back to FoxRove projects"><span class="brand-arrow">←</span><span>FoxRove</span></a>
+        <div class="nav-actions">
+          <a class="nav-link" href="https://github.com/Ethan36Z/Corvus" target="_blank" rel="noreferrer">GitHub ↗</a>
+          <button class="lang-switcher" type="button" aria-label="Switch language" aria-pressed="false">EN / 中文</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-copy">
+          <p class="eyebrow hero-entry" style="--delay:.06s" data-en="CASE STUDY / LOCAL AI" data-zh="项目案例 / 本地 AI">CASE STUDY / LOCAL AI</p>
+          <h1 class="hero-entry" style="--delay:.16s">Corvus</h1>
+          <h2 class="hero-title hero-entry" style="--delay:.27s" data-en="Persistent personal AI on consumer hardware." data-zh="运行在消费级硬件上的长期个人 AI。">Persistent personal AI on consumer hardware.</h2>
+          <p class="hero-lead hero-entry" style="--delay:.38s" data-en="A local-first AI system built around persistent memory, hybrid evidence recall, isolated deployments, and a 9B model running on an RTX 2080 Ti." data-zh="一个以持久记忆、混合证据召回、隔离部署为核心的本地优先 AI 系统，并在 RTX 2080 Ti 上运行 9B 模型。">A local-first AI system built around persistent memory, hybrid evidence recall, isolated deployments, and a 9B model running on an RTX 2080 Ti.</p>
+          <div class="hero-actions hero-entry" style="--delay:.49s">
+            <a class="btn btn-primary" href="https://demo-corvus.foxluma.com" target="_blank" rel="noreferrer" data-en="Try live demo ↗" data-zh="体验在线 Demo ↗">Try live demo ↗</a>
+            <a class="btn btn-secondary" href="https://github.com/Ethan36Z/Corvus" target="_blank" rel="noreferrer" data-en="View GitHub ↗" data-zh="查看 GitHub ↗">View GitHub ↗</a>
+          </div>
+          <div class="hero-meta hero-entry" style="--delay:.6s">
+            <span class="pill">Python</span><span class="pill">FastAPI</span><span class="pill">SQLite</span><span class="pill">LanceDB</span><span class="pill">llama.cpp</span><span class="pill">Local AI</span>
+          </div>
+        </div>
+
+        <figure class="product-shot-wrap hero-entry" style="--delay:.72s">
+          <div class="product-shot"><img src="/assets/corvus.webp" alt="Corvus Memory Playground clean conversation screen" width="1600" height="941" fetchpriority="high" /></div>
+          <figcaption class="shot-caption" data-en="CORVUS / MEMORY PLAYGROUND / CLEAN DEMO BASELINE" data-zh="CORVUS / MEMORY PLAYGROUND / 干净 DEMO 基线">CORVUS / MEMORY PLAYGROUND / CLEAN DEMO BASELINE</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <div><div class="section-number">01 / THE IDEA</div><h2 data-en="AI that does not begin again every session." data-zh="不在每次会话里重新开始的 AI。">AI that does not begin again every session.</h2></div>
+          <div>
+            <p class="section-copy" data-en="Corvus started from a simple product question: what would a personal AI look like if the same person used it for months or years, on hardware they already own?" data-zh="Corvus 从一个简单的产品问题出发：如果同一个人连续使用 AI 数月甚至数年，而且它运行在用户已经拥有的硬件上，这样的个人 AI 应该是什么样？">Corvus started from a simple product question: what would a personal AI look like if the same person used it for months or years, on hardware they already own?</p>
+            <p class="section-copy" data-en="The system treats conversation history as durable evidence rather than disposable prompt text. Raw experience remains canonical; retrieval, interpretation, and higher-level memory can evolve without rewriting what actually happened." data-zh="系统把对话历史视为长期证据，而不是一次性的 prompt 文本。原始经历保持为 canonical truth；召回、解释与更高层记忆可以持续演进，而不改写真正发生过的内容。">The system treats conversation history as durable evidence rather than disposable prompt text. Raw experience remains canonical; retrieval, interpretation, and higher-level memory can evolve without rewriting what actually happened.</p>
+          </div>
+        </div>
+        <div class="principle reveal">
+          <div class="principle-label" data-en="CORE PRINCIPLE" data-zh="核心原则">CORE PRINCIPLE</div>
+          <p class="principle-text" data-en="Store all experience. Spend intelligence selectively." data-zh="保存全部经历，有选择地投入智能。">Store all experience. Spend intelligence selectively.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <div><div class="section-number">02 / MEMORY SYSTEM</div><h2 data-en="Evidence first. Interpretation stays rebuildable." data-zh="证据优先，解释始终可以重建。">Evidence first. Interpretation stays rebuildable.</h2></div>
+          <p class="section-copy" data-en="Corvus separates what the user actually said from what the system currently understands. That boundary keeps long-term memory inspectable, correctable, and safer to evolve." data-zh="Corvus 把“用户实际说过什么”和“系统当前如何理解”分开。这条边界让长期记忆保持可检查、可纠正，也更适合持续演进。">Corvus separates what the user actually said from what the system currently understands. That boundary keeps long-term memory inspectable, correctable, and safer to evolve.</p>
+        </div>
+
+        <div class="memory-flow reveal">
+          <article class="memory-node"><div class="node-kicker">01 / CANONICAL</div><h3>Evidence Log</h3><p data-en="SQLite-backed raw conversation evidence. Durable, chronological, and never replaced by a derived summary." data-zh="由 SQLite 保存的原始对话证据。持久、按时间记录，不会被派生摘要替代。">SQLite-backed raw conversation evidence. Durable, chronological, and never replaced by a derived summary.</p></article>
+          <article class="memory-node"><div class="node-kicker">02 / ACTIVE</div><h3>Working Context</h3><p data-en="Recent conversation plus targeted recall assembled for the current turn." data-zh="为当前轮次组合最近对话与定向召回结果。">Recent conversation plus targeted recall assembled for the current turn.</p></article>
+          <article class="memory-node"><div class="node-kicker">03 / DERIVED</div><h3>Materialized Memory</h3><p data-en="Assertions, relations, temporal state, and future derived views remain correctable and rebuildable." data-zh="断言、关系、时间状态及未来派生视图都保持可纠正、可重建。">Assertions, relations, temporal state, and future derived views remain correctable and rebuildable.</p></article>
+        </div>
+
+        <div class="recall-grid reveal">
+          <article class="recall-card"><h3 data-en="Evidence Recall" data-zh="证据召回">Evidence Recall</h3><p data-en="Answers: “What did the user actually say?” Sparse BM25 and multilingual dense retrieval are fused, then hydrated back from canonical SQLite records." data-zh="回答：“用户实际说过什么？” 稀疏 BM25 与多语言 dense retrieval 融合，再回到 SQLite canonical records 中 hydrate。">Answers: “What did the user actually say?” Sparse BM25 and multilingual dense retrieval are fused, then hydrated back from canonical SQLite records.</p></article>
+          <article class="recall-card"><h3 data-en="Knowledge Recall" data-zh="知识召回">Knowledge Recall</h3><p data-en="Designed for the evolving question: “What does Corvus currently understand?” Derived memory never replaces the underlying evidence." data-zh="面向不断演进的问题：“Corvus 当前理解了什么？” 派生记忆永远不替代底层证据。">Designed for the evolving question: “What does Corvus currently understand?” Derived memory never replaces the underlying evidence.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <div><div class="section-number">03 / LOCAL RUNTIME</div><h2 data-en="Built for hardware people actually own." data-zh="面向真正有人在用的消费级硬件。">Built for hardware people actually own.</h2></div>
+          <p class="section-copy" data-en="The current deployment shares one local model runtime across Private and Demo Corvus. Conversation state, authentication trust, and canonical memory remain isolated even while the expensive inference layer is reused." data-zh="当前部署让 Private 与 Demo Corvus 共享一个本地模型运行时，同时保持会话状态、认证信任与 canonical memory 完全隔离，从而复用最昂贵的推理层。">The current deployment shares one local model runtime across Private and Demo Corvus. Conversation state, authentication trust, and canonical memory remain isolated even while the expensive inference layer is reused.</p>
+        </div>
+        <div class="runtime-grid reveal">
+          <div class="runtime-card"><div class="runtime-value">9B</div><div class="runtime-label">QWEN3.5 / Q5_K_M</div></div>
+          <div class="runtime-card"><div class="runtime-value">11 GB</div><div class="runtime-label">RTX 2080 Ti VRAM</div></div>
+          <div class="runtime-card"><div class="runtime-value">llama.cpp</div><div class="runtime-label" data-en="LOCAL MODEL SERVER" data-zh="本地模型服务">LOCAL MODEL SERVER</div></div>
+          <div class="runtime-card"><div class="runtime-value">Hybrid</div><div class="runtime-label" data-en="SPARSE + DENSE EVIDENCE RECALL" data-zh="稀疏 + DENSE 证据召回">SPARSE + DENSE EVIDENCE RECALL</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <div><div class="section-number">04 / DEPLOYMENT</div><h2 data-en="One product. Two isolated worlds." data-zh="同一个产品，两个隔离的世界。">One product. Two isolated worlds.</h2></div>
+          <p class="section-copy" data-en="Corvus is deployed twice from the same codebase: a private long-term instance and a clean recruiter-facing demo. They share the local model runtime, but not credentials, authentication keys, application processes, or canonical data." data-zh="Corvus 从同一套代码部署为两个实例：长期使用的 Private 版本，以及面向招聘者的干净 Demo。两者共享本地模型运行时，但不共享凭据、认证密钥、应用进程或 canonical data。">Corvus is deployed twice from the same codebase: a private long-term instance and a clean recruiter-facing demo. They share the local model runtime, but not credentials, authentication keys, application processes, or canonical data.</p>
+        </div>
+
+        <div class="deployment-grid reveal">
+          <article class="deploy-card">
+            <div class="node-kicker">PRIVATE</div><h3>Private Corvus</h3><p data-en="A persistent personal instance with its own FoxGate realm and canonical memory." data-zh="长期个人实例，拥有独立的 FoxGate realm 与 canonical memory。">A persistent personal instance with its own FoxGate realm and canonical memory.</p>
+            <ul class="deploy-list"><li>Independent auth realm</li><li>Independent API / Web</li><li>Private canonical SQLite + LanceDB</li><li>Hidden from portfolio</li></ul>
+          </article>
+          <div class="shared-model">SHARED LOCAL 9B RUNTIME</div>
+          <article class="deploy-card">
+            <div class="node-kicker">PUBLIC DEMO</div><h3>Demo Corvus</h3><p data-en="A clean, password-gated instance intended for real recruiter interaction." data-zh="为招聘者真实体验准备的干净、密码保护实例。">A clean, password-gated instance intended for real recruiter interaction.</p>
+            <ul class="deploy-list"><li>Independent auth realm</li><li>Independent API / Web</li><li>Zero-message clean baseline</li><li>Cloudflare HTTPS + FoxGate</li></ul>
+          </article>
+        </div>
+        <p class="deploy-note reveal" data-en="Same product. Same model runtime. Separate authentication trust and canonical memory." data-zh="同一产品，同一模型运行时；认证信任与 canonical memory 独立隔离。">Same product. Same model runtime. Separate authentication trust and canonical memory.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <div><div class="section-number">05 / VALIDATION</div><h2 data-en="Designed to survive outside the development session." data-zh="不是只在开发会话里成立的系统。">Designed to survive outside the development session.</h2></div>
+          <p class="section-copy" data-en="The deployment was accepted through real browser flows and a full-host reboot rather than only local unit checks. Canonical data integrity and fail-closed access were verified after recovery." data-zh="部署验收不仅依赖本地检查，还覆盖真实浏览器路径与整机重启。恢复后继续验证 canonical data 完整性与 fail-closed 访问边界。">The deployment was accepted through real browser flows and a full-host reboot rather than only local unit checks. Canonical data integrity and fail-closed access were verified after recovery.</p>
+        </div>
+        <div class="validation-grid reveal">
+          <div class="validation-item"><span class="check">✓</span><span data-en="Persistent SQLite evidence log across sessions" data-zh="跨会话持久化的 SQLite Evidence Log">Persistent SQLite evidence log across sessions</span></div>
+          <div class="validation-item"><span class="check">✓</span><span data-en="Sparse + dense hybrid evidence retrieval" data-zh="稀疏 + dense 混合证据召回">Sparse + dense hybrid evidence retrieval</span></div>
+          <div class="validation-item"><span class="check">✓</span><span data-en="Cross-session recall after fresh process restart" data-zh="全新进程重启后的跨会话召回">Cross-session recall after fresh process restart</span></div>
+          <div class="validation-item"><span class="check">✓</span><span data-en="Physical Private / Demo canonical-data isolation" data-zh="Private / Demo canonical data 物理隔离">Physical Private / Demo canonical-data isolation</span></div>
+          <div class="validation-item"><span class="check">✓</span><span data-en="Secure, HttpOnly, SameSite session cookies" data-zh="Secure、HttpOnly、SameSite session cookie">Secure, HttpOnly, SameSite session cookies</span></div>
+          <div class="validation-item"><span class="check">✓</span><span data-en="Public routes fail closed when unauthenticated" data-zh="公网未认证访问保持 fail-closed">Public routes fail closed when unauthenticated</span></div>
+          <div class="validation-item"><span class="check">✓</span><span data-en="Loopback-only application origins" data-zh="应用 origin 仅监听 loopback">Loopback-only application origins</span></div>
+          <div class="validation-item"><span class="check">✓</span><span data-en="Automatic recovery after full-host reboot" data-zh="整机重启后的自动恢复">Automatic recovery after full-host reboot</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section final-cta">
+      <div class="container reveal">
+        <div class="section-number">LIVE / DEMO</div>
+        <h2 data-en="The demo is a real isolated Corvus instance." data-zh="这个 Demo 是一个真实隔离的 Corvus 实例。">The demo is a real isolated Corvus instance.</h2>
+        <p data-en="Start with a clean memory, talk to the local model, and explore the same product path used by the private deployment." data-zh="从干净记忆开始，与本地模型对话，并体验与 Private 部署相同的产品路径。">Start with a clean memory, talk to the local model, and explore the same product path used by the private deployment.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://demo-corvus.foxluma.com" target="_blank" rel="noreferrer" data-en="Open live demo ↗" data-zh="打开在线 Demo ↗">Open live demo ↗</a>
+          <a class="btn btn-secondary" href="https://github.com/Ethan36Z/Corvus" target="_blank" rel="noreferrer" data-en="Read the source ↗" data-zh="查看源码 ↗">Read the source ↗</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-row"><span>© Ethan Zhang · FoxRove</span><span class="mono">Corvus / Persistent Personal AI</span></div>
+  </footer>
+
+  <script>
+    (() => {
+      const switcher = document.querySelector('.lang-switcher');
+      const translatable = document.querySelectorAll('[data-en][data-zh]');
+      const readLanguage = () => {
+        try { return localStorage.getItem('foxrove-language'); } catch { return null; }
+      };
+      const writeLanguage = (language) => {
+        try { localStorage.setItem('foxrove-language', language); } catch { /* optional */ }
+      };
+      const setLanguage = (language) => {
+        const active = language === 'zh' ? 'zh' : 'en';
+        document.documentElement.lang = active === 'zh' ? 'zh-CN' : 'en';
+        document.documentElement.dataset.language = active;
+        translatable.forEach((node) => { node.textContent = node.dataset[active]; });
+        switcher.setAttribute('aria-pressed', String(active === 'zh'));
+        writeLanguage(active);
+      };
+      setLanguage(readLanguage() || 'en');
+      switcher.addEventListener('click', () => setLanguage(document.documentElement.dataset.language === 'en' ? 'zh' : 'en'));
+
+      const reveals = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: .16, rootMargin: '0px 0px -7% 0px' });
+        reveals.forEach((node) => observer.observe(node));
+      } else {
+        reveals.forEach((node) => node.classList.add('is-visible'));
+      }
+    })();
+  </script>
+</body>
+</html>
