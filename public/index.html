@@ -152,6 +152,84 @@
     .section-head { display: flex; align-items: end; justify-content: space-between; gap: 32px; margin-bottom: 62px; }
     .section-head .lead { max-width: 41ch; font-size: 16px; }
     .projects-motion-note { margin-top: 16px; color: var(--muted); font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; }
+
+    .ai-feature {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+      gap: clamp(28px, 5vw, 64px);
+      align-items: center;
+      padding: clamp(26px, 4vw, 46px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background:
+        radial-gradient(circle at 20% 0%, color-mix(in oklch, var(--accent) 16%, transparent), transparent 38%),
+        linear-gradient(135deg, color-mix(in oklch, var(--panel) 86%, transparent), color-mix(in oklch, var(--bg) 72%, transparent));
+      overflow: hidden;
+    }
+    .ai-feature-copy {
+      display: grid;
+      gap: 18px;
+    }
+    .ai-kicker {
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .ai-feature h3 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 72px);
+      line-height: .95;
+      letter-spacing: -.055em;
+    }
+    .ai-feature p {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(16px, 1.55vw, 20px);
+      line-height: 1.7;
+      text-wrap: pretty;
+    }
+    .ai-feature .tags {
+      margin-top: 2px;
+    }
+    .ai-feature-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 6px;
+    }
+    .ai-feature-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 10px 15px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--text);
+      background: color-mix(in oklch, var(--panel) 78%, transparent);
+      font-size: 14px;
+      font-weight: 650;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+    .ai-feature-links a:hover {
+      transform: translateY(-1px);
+      border-color: color-mix(in oklch, var(--accent) 70%, var(--line));
+      background: color-mix(in oklch, var(--accent) 12%, var(--panel));
+    }
+    .ai-feature-shot {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 22px 70px color-mix(in oklch, black 36%, transparent);
+    }
+    .ai-feature-shot img {
+      width: 100%;
+      height: auto;
+    }
+
     .project-grid { gap: 28px; }
     .project-card { position: relative; border: 1px solid var(--border); border-radius: var(--radius-lg); background: color-mix(in oklch, var(--surface) 90%, var(--bg)); overflow: hidden; opacity: 1; transform: none; transition: border-color .35s ease, box-shadow .35s ease; }
     .project-card[data-reveal] { --reveal-delay: 0s; opacity: 0; clip-path: inset(10% 4% 11% 4% round 20px); transform: translate3d(0, 78px, 0) scale(.965); transition: opacity .48s ease var(--reveal-delay), clip-path 1s cubic-bezier(.16,1,.3,1) var(--reveal-delay), transform 1s cubic-bezier(.16,1,.3,1) var(--reveal-delay), border-color .35s ease, box-shadow .35s ease; }
@@ -196,6 +274,7 @@
 
     @media (max-width: 920px) {
       :root { --gutter: 22px; }
+      .ai-feature,
       .grid-2, .grid-3, .grid-4, .grid-2-1, .grid-1-2, .hero-split, .profile-grid { grid-template-columns: 1fr; }
       .hero { min-height: auto; }
       .hero-split { gap: 54px; }
@@ -284,18 +363,39 @@
       </div>
     </section>
 
+    <section class="section" id="ai" data-od-id="ai-feature">
+      <div class="container">
+        <div class="section-head">
+          <div><p class="eyebrow" data-i18n="aiEyebrow">02 / AI LAB</p><h2 data-i18n="aiHeading">A personal AI that remembers.</h2></div>
+          <p class="lead" data-i18n="aiLead">Corvus is the flagship AI system behind FoxRove: a local-first companion built around persistent memory, evidence recall, and isolated demo deployment.</p>
+        </div>
+        <div class="ai-feature">
+          <div class="ai-feature-copy">
+            <div class="ai-kicker" data-i18n="aiKicker">FEATURED AI SYSTEM</div>
+            <h3>Corvus</h3>
+            <p data-i18n="aiDesc">A persistent personal AI running locally on consumer hardware, with long-term memory, hybrid evidence recall, and a public demo isolated from private data.</p>
+            <div class="tags"><span class="tag">Local AI</span><span class="tag">Memory Systems</span><span class="tag">FastAPI</span><span class="tag">SQLite</span><span class="tag">llama.cpp</span></div>
+            <div class="ai-feature-links">
+              <a href="/projects/corvus/" data-i18n="exploreProject">Explore case study →</a>
+              <a href="https://demo-corvus.foxluma.com" target="_blank" rel="noreferrer" data-i18n="liveDemo">Live Demo ↗</a>
+              <a href="https://github.com/Ethan36Z/Corvus" target="_blank" rel="noreferrer">GitHub ↗</a>
+            </div>
+          </div>
+          <a class="ai-feature-shot" href="/projects/corvus/" aria-label="Open Corvus case study" data-i18n-aria="aiShotAria">
+            <img src="assets/corvus.png" alt="Corvus Memory Playground clean conversation screen" data-i18n-alt="corvusAlt">
+          </a>
+        </div>
+      </div>
+    </section>
+
     <section class="section" id="projects" data-od-id="projects">
       <div class="container">
         <div class="section-head">
-          <div><p class="eyebrow" data-i18n="projectsEyebrow">02 / SELECTED WORK</p><h2 data-i18n="projectsHeading" data-build-path-target data-od-id="projects-heading">Real interfaces. Real workflows.</h2><p class="projects-motion-note" data-i18n="projectsMotion">SCROLL TO REVEAL / 05 PROJECTS</p></div>
+          <div><p class="eyebrow" data-i18n="projectsEyebrow">02 / SELECTED WORK</p><h2 data-i18n="projectsHeading" data-build-path-target data-od-id="projects-heading">Real interfaces. Real workflows.</h2><p class="projects-motion-note" data-i18n="projectsMotion">SCROLL TO REVEAL / 04 PROJECTS</p></div>
           <p class="lead" data-i18n="projectsLead">Every screenshot is from a working product. As you scroll, each interface enters view; pause, and its details become the point.</p>
         </div>
         <div class="grid-2 project-grid" data-od-id="projects-grid">
-          <article class="project-card" data-od-id="project-card-corvus">
-            <div class="ph-img project-preview" aria-label="Corvus persistent personal AI screenshot" data-i18n-aria="corvusAria"><img class="project-image" src="assets/corvus.png" alt="Corvus Memory Playground clean conversation screen" data-i18n-alt="corvusAlt"><span class="project-frame"><span data-i18n="corvusFrame">LIVE DEMO / CORVUS</span></span></div>
-            <div class="project-body"><span class="project-number" data-i18n="corvusType">01 — LOCAL AI SYSTEM</span><h3>Corvus</h3><p class="project-desc" data-i18n="corvusDesc">A persistent personal AI running locally with long-term memory, hybrid evidence recall, and isolated Private/Demo deployments.</p><div class="tags"><span class="tag">Python</span><span class="tag">FastAPI</span><span class="tag">SQLite</span><span class="tag">Local AI</span></div><div class="project-links"><a href="/projects/corvus/" data-i18n="exploreProject" data-od-id="corvus-case-study">Explore project →</a><a href="https://demo-corvus.foxluma.com" target="_blank" rel="noreferrer" data-i18n="liveDemo" data-od-id="corvus-demo">Live Demo ↗</a><a href="https://github.com/Ethan36Z/Corvus" target="_blank" rel="noreferrer" data-od-id="corvus-github">GitHub ↗</a></div></div>
-          </article>
-          <article class="project-card" data-od-id="project-card-pawcarehub">
+<article class="project-card" data-od-id="project-card-pawcarehub">
             <div class="ph-img project-preview" aria-label="PawCareHub live product screenshot" data-i18n-aria="pawcareAria"><img class="project-image" src="assets/pawcarehub.png" alt="PawCareHub pet care platform home screen" data-i18n-alt="pawcareAlt"><span class="project-frame"><span data-i18n="pawcareFrame">LIVE PRODUCT / PAWCAREHUB</span></span></div>
             <div class="project-body"><span class="project-number" data-i18n="pawcareType">01 — SERVICE PLATFORM</span><h3>PawCareHub</h3><p class="project-desc" data-i18n="pawcareDesc">A full-stack service platform connecting bookings, pet profiles, and role-based workflows.</p><div class="tags"><span class="tag">Vue 3</span><span class="tag">Spring Boot</span><span class="tag">MySQL</span></div><div class="project-links"><a href="https://pawcarehub.foxrove.com" target="_blank" rel="noreferrer" data-i18n="viewProject" data-od-id="pawcarehub-view">View project ↗</a><a href="https://github.com/Ethan36Z/pawcare-hub" target="_blank" rel="noreferrer" data-od-id="pawcarehub-github">GitHub ↗</a></div></div>
           </article>
@@ -347,12 +447,13 @@
           navAria: 'Primary navigation', navProfile: 'Profile', navProjects: 'Projects', navSkills: 'Stack', navContact: 'Contact', mobileContact: 'Contact ↗', languageAria: 'Switch language',
           heroRole: 'FULL-STACK DEVELOPER / SOFTWARE ENGINEER', heroHeading: 'Turning ideas into usable products.', heroIntro: 'I build practical web applications with thoughtful interfaces and reliable systems.', heroProjects: 'View projects', heroStatus: 'Building now: lighter, clearer web experiences.',
           profileEyebrow: '01 / PROFILE', profileHeading: 'From user flows to production.', profileCopy: 'I turn complex problems into useful, reliable web applications. FoxRove documents the products, tools, and experiments I continue building.', profileBuilds: 'Builds', profileBuildsCopy: 'Production-oriented web applications with complete frontend and backend flows.', profileApproach: 'Approach', profileApproachCopy: 'Clear domain models, thoughtful interfaces, and systems designed to evolve.', profileExploring: 'Exploring', profileExploringCopy: 'Local AI workflows, language-learning tools, and quiet interaction systems for complex tasks.',
-          projectsEyebrow: '02 / SELECTED WORK', projectsHeading: 'Real interfaces. Real workflows.', projectsMotion: 'SCROLL TO REVEAL / 05 PROJECTS', projectsLead: 'Every screenshot is from a working product. As you scroll, each interface enters view; pause, and its details become the point.',
+          aiEyebrow: '02 / AI LAB', aiHeading: 'A personal AI that remembers.', aiLead: 'Corvus is the flagship AI system behind FoxRove: a local-first companion built around persistent memory, evidence recall, and isolated demo deployment.', aiKicker: 'FEATURED AI SYSTEM', aiDesc: 'A persistent personal AI running locally on consumer hardware, with long-term memory, hybrid evidence recall, and a public demo isolated from private data.', aiShotAria: 'Open Corvus case study', corvusAlt: 'Corvus Memory Playground clean conversation screen', exploreProject: 'Explore case study →', liveDemo: 'Live Demo ↗',
+          projectsEyebrow: '02 / SELECTED WORK', projectsHeading: 'Real interfaces. Real workflows.', projectsMotion: 'SCROLL TO REVEAL / 04 PROJECTS', projectsLead: 'Every screenshot is from a working product. As you scroll, each interface enters view; pause, and its details become the point.',
           corvusAria: 'Corvus persistent personal AI screenshot', corvusAlt: 'Corvus Memory Playground clean conversation screen', corvusFrame: 'LIVE DEMO / CORVUS', corvusType: '01 — LOCAL AI SYSTEM', corvusDesc: 'A persistent personal AI running locally with long-term memory, hybrid evidence recall, and isolated Private/Demo deployments.', exploreProject: 'Explore project →', liveDemo: 'Live Demo ↗',
-          pawcareAria: 'PawCareHub live product screenshot', pawcareAlt: 'PawCareHub pet care platform home screen', pawcareFrame: 'LIVE PRODUCT / PAWCAREHUB', pawcareType: '02 — SERVICE PLATFORM', pawcareDesc: 'A full-stack service platform connecting bookings, pet profiles, and role-based workflows.',
-          jobtrackAria: 'JobTrack live product screenshot', jobtrackAlt: 'JobTrack job-search workflow dashboard', jobtrackFrame: 'LIVE PRODUCT / JOBTRACK', jobtrackType: '03 — JOB SEARCH TOOL', jobtrackDesc: 'A full-stack workspace for tracking opportunities, application stages, and career workflows.',
-          foxwordsAria: 'FoxWords live product screenshot', foxwordsAlt: 'FoxWords language practice interface', foxwordsFrame: 'LIVE PRODUCT / FOXWORDS', foxwordsType: '04 — LANGUAGE EXPERIMENT', foxwordsDesc: 'A local AI language-learning experiment exploring input, memory, and daily practice workflows.',
-          focusfoxAria: 'FocusFox live product screenshot', focusfoxAlt: 'FocusFox immersive focus space', focusfoxFrame: 'LIVE PRODUCT / FOCUSFOX', focusfoxType: '05 — FOCUS TOOL', focusfoxDesc: 'A lightweight focus tool designed around calmer workflows, session tracking, and intentional study rhythms.', viewProject: 'View project ↗',
+          pawcareAria: 'PawCareHub live product screenshot', pawcareAlt: 'PawCareHub pet care platform home screen', pawcareFrame: 'LIVE PRODUCT / PAWCAREHUB', pawcareType: '01 — SERVICE PLATFORM', pawcareDesc: 'A full-stack service platform connecting bookings, pet profiles, and role-based workflows.',
+          jobtrackAria: 'JobTrack live product screenshot', jobtrackAlt: 'JobTrack job-search workflow dashboard', jobtrackFrame: 'LIVE PRODUCT / JOBTRACK', jobtrackType: '02 — JOB SEARCH TOOL', jobtrackDesc: 'A full-stack workspace for tracking opportunities, application stages, and career workflows.',
+          foxwordsAria: 'FoxWords live product screenshot', foxwordsAlt: 'FoxWords language practice interface', foxwordsFrame: 'LIVE PRODUCT / FOXWORDS', foxwordsType: '03 — LANGUAGE EXPERIMENT', foxwordsDesc: 'A local AI language-learning experiment exploring input, memory, and daily practice workflows.',
+          focusfoxAria: 'FocusFox live product screenshot', focusfoxAlt: 'FocusFox immersive focus space', focusfoxFrame: 'LIVE PRODUCT / FOCUSFOX', focusfoxType: '04 — FOCUS TOOL', focusfoxDesc: 'A lightweight focus tool designed around calmer workflows, session tracking, and intentional study rhythms.', viewProject: 'View project ↗',
           skillsEyebrow: '03 / TECHNICAL MAP', skillsHeading: 'Using the right tools to solve real-world problems.', skillFrontend: 'Frontend', modernCss: 'Modern CSS', skillBackend: 'Backend', skillData: 'Data & access', skillDelivery: 'Delivery', deliveryMaintenance: 'Deployment & production workflows',
           contactEyebrow: "04 / LET'S TALK", contactHeading: 'Looking for an engineer who can turn ideas into products.', contactLead: 'Whether it starts with a project, a conversation, or a collaboration.', contactGithub: 'Explore GitHub', contactWebsite: 'Visit FoxRove', contactNote: 'Professional links: GitHub · FoxRove', footerLine: 'Stable structure, changing world.'
         },
@@ -360,7 +461,8 @@
           navAria: '主导航', navProfile: '画像', navProjects: '项目', navSkills: '技术', navContact: '联系我', mobileContact: '联系 ↗', languageAria: '切换语言',
           heroRole: '全栈开发者 / 软件工程师', heroHeading: '把想法变成可用的产品。', heroIntro: '我构建兼具用心界面与可靠系统的实用 Web 应用。', heroProjects: '查看项目', heroStatus: '正在构建：更轻、更清晰的 Web 体验。',
           profileEyebrow: '01 / 开发画像', profileHeading: '从用户路径到部署上线。', profileCopy: '我偏好把复杂问题收束成直接、好用且可维护的产品体验。FoxRove 记录我持续推进的工具、应用与长期实验。', profileBuilds: '擅长构建', profileBuildsCopy: '有明确工作流的 Web 应用，以及需要完整数据链路的产品原型。', profileApproach: '工程方式', profileApproachCopy: '以清晰的领域模型、可读的界面状态和可持续迭代为优先级。', profileExploring: '正在探索', profileExploringCopy: '本地 AI 工作流、语言学习工具与让复杂任务变得安静的交互系统。',
-          projectsEyebrow: '02 / 代表作品', projectsHeading: '真实的界面，真实的工作流。', projectsMotion: '滚动显影 / 05 项目', projectsLead: '每一张截图都来自实际产品。滚动时，界面逐一进入视野；停留时，细节成为主角。',
+          aiEyebrow: '02 / AI 实验室', aiHeading: '一个会记得你的个人 AI。', aiLead: 'Corvus 是 FoxRove 背后的旗舰 AI 系统：本地优先，以持久记忆、证据召回和隔离 Demo 部署为核心。', aiKicker: '旗舰 AI 系统', aiDesc: '运行在消费级硬件上的长期个人 AI，具备持久记忆、混合证据召回，以及与私人数据隔离的公开 Demo。', aiShotAria: '打开 Corvus 项目案例', corvusAlt: 'Corvus Memory Playground 干净对话界面截图', exploreProject: '查看项目案例 →', liveDemo: '在线 Demo ↗',
+          projectsEyebrow: '02 / 代表作品', projectsHeading: '真实的界面，真实的工作流。', projectsMotion: '滚动显影 / 04 项目', projectsLead: '每一张截图都来自实际产品。滚动时，界面逐一进入视野；停留时，细节成为主角。',
           corvusAria: 'Corvus 长期个人 AI 截图', corvusAlt: 'Corvus Memory Playground 干净对话界面截图', corvusFrame: '在线 Demo / CORVUS', corvusType: '01 — 本地 AI 系统', corvusDesc: '运行在本地的长期个人 AI，具备持久记忆、混合证据召回，以及隔离的 Private / Demo 部署。', exploreProject: '查看项目 →', liveDemo: '在线 Demo ↗',
           pawcareAria: 'PawCareHub 真实产品截图', pawcareAlt: 'PawCareHub 宠物照护平台首页截图', pawcareFrame: '真实产品 / PAWCAREHUB', pawcareType: '01 — 服务平台', pawcareDesc: '将预约、宠物档案与照护流程收进一个清晰的服务端产品体验。',
           jobtrackAria: 'JobTrack 真实产品截图', jobtrackAlt: 'JobTrack 求职工作流仪表盘截图', jobtrackFrame: '真实产品 / JOBTRACK', jobtrackType: '02 — 求职工具', jobtrackDesc: '聚合机会、阶段和下一步行动，减少分散信息与错过跟进。',
